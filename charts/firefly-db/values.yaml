@@ -13,7 +13,13 @@ storage:
 backup:
   # There are two possible backup destinations currently implemented, http and pvc
   destination: http
+  gzip: true
+  filename: $DBNAME-`date +%Y%m%d%H%M%S`.sql.gz
+  extraVolumeMounts: []
+  extraVolumes: []
+  # Persistence
   pvc:
+    enabled: false
     class: ~
     accessModes: ReadWriteOnce
     dataSize: 1Gi
@@ -36,3 +42,4 @@ configs:
   existingSecret: ""
 
 backupSchedule: "0 3 * * *"
+
