@@ -1,4 +1,4 @@
-{{- if .Values.backup.pvc.enabled }}
+{{- if and (.Values.backup.pvc.enabled) (eq .Values.backup.pvc.existingClaim "") }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

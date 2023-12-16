@@ -19,8 +19,6 @@ backup:
   destination: http
   gzip: true
   filename: $DBNAME-`date +%Y%m%d%H%M%S`.sql.gz
-  extraVolumeMounts: []
-  extraVolumes: []
   # Persistence
   pvc:
     enabled: false
@@ -29,6 +27,8 @@ backup:
     dataSize: 1Gi
     # -- Use an existing PersistentVolumeClaim, overrides values above
     existingClaim: ""
+  extraVolumeMounts: []
+  extraVolumes: []
 
 configs:
   RESTORE_URL: ""
