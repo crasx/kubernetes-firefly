@@ -38,10 +38,20 @@ spec:
             memory: "512Mi"
             cpu: "500m"
         volumeMounts:
+          {{- with .Values.extraVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{ if .Values.storage.enabled }}
           - name: db-storage
             mountPath: /var/lib/postgresql/data
             subPath: data
+          {{- end }}
       volumes:
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{ if .Values.storage.enabled }}
         - name: db-storage
           persistentVolumeClaim:
             claimName: {{ default (printf "%s-%s" (include "firefly-db.fullname" .) "storage-claim") .Values.storage.existingClaim }}
+        {{- end }}
