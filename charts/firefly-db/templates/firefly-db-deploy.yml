@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: {{ template "firefly-db.fullname" . }}-postgre-db
+  name: {{ template "firefly-db.fullname" . }}-db
   labels:
     app: {{ template "firefly-db.name" . }}
     chart: {{ template "firefly-db.chart" . }}
@@ -23,12 +23,11 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
-        {{- if not .Values.configs.existingSecret }}
         - configMapRef:
             name: {{ template "firefly-db.fullname" . }}-config
-        {{- else }}
+        {{- if .Values.global.config.existingSecret }}
         - secretRef:
-            name: {{ .Values.configs.existingSecret }}
+            name: {{ .Values.global.config.existingSecret }}
         {{- end }}
         resources:
           requests:
@@ -42,9 +41,16 @@ spec:
           {{- toYaml . | nindent 8 }}
           {{- end }}
           {{ if .Values.storage.enabled }}
+          {{ if .Values.image.repository | contains "mysql" }}
+          - name: db-storage
+            mountPath: /var/lib/mysql
+            subPath: data
+          {{- end }}
+          {{ if .Values.image.repository | contains "postgres" }}
           - name: db-storage
             mountPath: /var/lib/postgresql/data
             subPath: data
+          {{- end }}
           {{- end }}
       volumes:
         {{- with .Values.extraVolumes }}

@@ -9,6 +9,20 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- range $key, $value := .Values.configs }}
+
+{{- range $key, $value := .Values.global.config.env }}
   {{ $key }}: {{ $value | quote }}
 {{- end }}
+
+  {{ if .Values.image.repository | contains "mysql" }}
+  MYSQL_DATABASE: {{ .Values.global.config.env.DB_NAME | quote }}
+  MYSQL_USER: {{ .Values.global.config.env.DB_USER | quote }}
+  MYSQL_PASSWORD: {{ .Values.global.config.env.DB_PASSWORD | quote }}
+  MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+  {{ end }}
+  {{ if .Values.image.repository | contains "postgres" }}
+  POSTGRES_DB: {{ .Values.global.config.env.DB_NAME | quote }}
+  POSTGRES_USER: {{ .Values.global.config.env.DB_USER | quote }}
+  POSTGRES_PASSWORD: {{ .Values.global.config.env.DB_PASSWORD | quote }}
+  POSTGRES_HOST_AUTH_METHOD: trust
+  {{ end }}

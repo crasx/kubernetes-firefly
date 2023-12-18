@@ -13,4 +13,4 @@ spec:
     pod-label: {{ template "firefly-db.fullname" . }}-pod
   ports:
   - protocol: TCP
-    port: 5432
+    port: {{ .Values.global.config.env.DB_PORT }}

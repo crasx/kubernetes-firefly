@@ -17,25 +17,26 @@ fireflyiii:
     # -- The access token in plain text
     accessToken: ""
 
-# -- Environment variables for the importer. See docs at: https://github.com/firefly-iii/data-importer/blob/main/.env.example
-config:
-  # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in config.env
-  existingSecret: ""
+global:
+  # -- Environment variables for the importer. See docs at: https://github.com/firefly-iii/data-importer/blob/main/.env.example
+  config:
+    # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in config.env
+    existingSecret: ""
 
-  # -- Set environment variables from configMaps or Secrets
-  envValueFrom: {}
+    # -- Set environment variables from configMaps or Secrets
+    envValueFrom: {}
 
-  # -- Directly defined environment variables. Use this for non-secret configuration values.
-  env:
-    IGNORE_DUPLICATE_ERRORS: "false"
-    TZ: "Europe/Amsterdam"
+    # -- Directly defined environment variables. Use this for non-secret configuration values.
+    env:
+      IGNORE_DUPLICATE_ERRORS: "false"
+      TZ: "Europe/Amsterdam"
 
-  # -- A list of files with a mountPath, a file name and the file's content. Files are stored as a secret.
-  files:
-    - mountPath: /var/www/html/storage/configurations
-      name: test.txt
-      content: |
-        This is a test file with some content
+    # -- A list of files with a mountPath, a file name and the file's content. Files are stored as a secret.
+    files:
+      - mountPath: /var/www/html/storage/configurations
+        name: test.txt
+        content: |
+          This is a test file with some content
 
 # -- Configure additional mounts for the pod. Value is a list of VolumeMount specs, see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#volumemount-v1-core
 additionalVolumeMounts: []

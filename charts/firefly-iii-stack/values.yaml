@@ -1,3 +1,19 @@
+  # environment variables
+global:
+  configs:
+    RESTORE_URL: ""
+    BACKUP_URL: ""
+    DB_PASSWORD: "YOURDBPASSWORD"
+    DB_HOST: firefly-firefly-db
+    DB_PORT: "5432"
+    DB_NAME: firefly
+    DB_USER: firefly
+    DEFAULT_LANGUAGE: "en_US"
+    DEFAULT_LOCALE: "equal"
+    TZ: "Europe/Amsterdam"
+    TRUSTED_PROXIES: "**"
+
+
 firefly-db:
   # if you set this to false it will not be installed
   enabled: true
@@ -10,17 +26,6 @@ firefly-db:
     class: ~
     accessModes: ~  # Change as needed for your storageClass https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     dataSize: 1Gi
-
-  # environment variables
-  configs:
-    RESTORE_URL: ""
-    BACKUP_URL: ""
-    PGPASSWORD: "YOURDBPASSWORD"
-    DBHOST: firefly-firefly-db
-    DBPORT: "5432"
-    DBNAME: firefly
-    DBUSER: firefly
-    TZ: Europe/Berlin
 
   backupSchedule: "0 3 * * *"
 

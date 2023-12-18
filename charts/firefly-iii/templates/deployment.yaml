@@ -40,25 +40,25 @@ spec:
         {{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if or .Values.config.envValueFrom }}
+        {{- if or .Values.global.config.envValueFrom }}
         env:
-        {{- range $key, $value := .Values.config.envValueFrom }}
+        {{- range $key, $value := .Values.global.config.envValueFrom }}
           - name: {{ $key }}
             valueFrom: {{- $value | toYaml | nindent 16 }}
         {{- end }}
         {{- end }}
-        {{- if or (.Values.config.env) (.Values.config.existingSecret) }}
+        {{- if or (.Values.global.config.env) (.Values.global.config.existingSecret) }}
         envFrom:
           - secretRef:
               name: {{ template "firefly-iii.fullname" . }}-app-key
-          {{- if .Values.config.env }}
+          {{- if .Values.global.config.env }}
           - configMapRef:
               name: {{ template "firefly-iii.fullname" . }}
           {{- end }}
-          {{- if .Values.config.existingSecret }}
+          {{- if .Values.global.config.existingSecret }}
           - secretRef:
-              name: {{ .Values.config.existingSecret }}
-          {{- else if .Values.secrets.env }}
+              name: {{ .Values.global.config.existingSecret }}
+          {{- else if .Values.global.secrets.env }}
           - secretRef:
               name: {{ template  "firefly-iii.fullname" . }}
           {{- end }}
@@ -96,10 +96,15 @@ spec:
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
+
+        {{- with .Values.extraContainers }}
+        {{- toYaml . | nindent 6 }}
+        {{- end }}
+
       {{- if or (.Values.persistence.enabled) (.Values.extraVolumes) }}
       volumes:
         {{- with .Values.extraVolumes }}
-          {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- if (.Values.persistence.enabled) }}
         - name: upload

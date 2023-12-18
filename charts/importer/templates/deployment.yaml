@@ -49,30 +49,30 @@ spec:
             {{- end }}
             - name: TRUSTED_PROXIES
               value: {{ .Values.trustedProxies | quote }}
-          {{- if or .Values.config.envValueFrom }}
-          {{- range $key, $value := .Values.config.envValueFrom }}
+          {{- if or .Values.global.config.envValueFrom }}
+          {{- range $key, $value := .Values.global.config.envValueFrom }}
             - name: {{ $key }}
               valueFrom: {{- $value | toYaml | nindent 16 }}
           {{- end }}
           {{- end }}
-          {{- if or (.Values.config.env) (.Values.config.existingSecret) }}
+          {{- if or (.Values.global.config.env) (.Values.global.config.existingSecret) }}
           envFrom:
-            {{- if .Values.config.env }}
+            {{- if .Values.global.config.env }}
             - configMapRef:
                 name: {{ template "importer.fullname" . }}
             {{- end }}
-            {{- if .Values.config.existingSecret }}
+            {{- if .Values.global.config.existingSecret }}
             - secretRef:
-                name: {{ .Values.config.existingSecret }}
+                name: {{ .Values.global.config.existingSecret }}
             {{- end }}
           {{- end }}
-          {{- if or .Values.config.files .Values.additionalVolumes }}
+          {{- if or .Values.global.config.files .Values.additionalVolumes }}
           volumeMounts:
           {{- with .Values.additionalVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.config.files }}
-            {{- range .Values.config.files }}
+          {{- if .Values.global.config.files }}
+            {{- range .Values.global.config.files }}
             - name: files
               mountPath: {{ .mountPath }}/{{ .name }}
               subPath: {{ .name }}
@@ -105,7 +105,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.config.files .Values.additionalVolumes }}
+      {{- if or .Values.global.config.files .Values.additionalVolumes }}
       volumes:
         - name: files
           secret:

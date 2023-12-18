@@ -1,7 +1,9 @@
 image:
-  repository: postgres
-  tag: 10-alpine
+  repository: mysql # postgres or mysql
+  tag: 8 # For mysql
+#  tag: 16-alpine # For postgres
   pullPolicy: IfNotPresent
+
 
 storage:
   enabled: true
@@ -14,11 +16,15 @@ storage:
 extraVolumeMounts: []
 extraVolumes: []
 
+restore:
+  enabled: false
+
+backupHelmHooks: false
 backup:
   # There are two possible backup destinations currently implemented, http and pvc
   destination: http
   gzip: true
-  filename: $DBNAME-`date +%Y%m%d%H%M%S`.sql.gz
+  filename: $DB_NAME-`date +%Y%m%d%H%M%S`.sql.gz
   # Persistence
   pvc:
     enabled: false
@@ -30,20 +36,21 @@ backup:
   extraVolumeMounts: []
   extraVolumes: []
 
-configs:
-  RESTORE_URL: ""
-  BACKUP_URL: ""
-  PGPASSWORD: ""
-  DBHOST: firefly-firefly-db
-  DBPORT: "5432"
-  DBNAME: firefly
-  DBUSER: firefly
-  TZ: Europe/Amsterdan
-  POSTGRES_HOST_AUTH_METHOD: trust
-  POSTGRES_USER: firefly
-  POSTGRES_PASSWORD: ""
-    # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in configs
-  existingSecret: ""
-
 backupSchedule: "0 3 * * *"
+
+global:
+  config:
+    env:
+      RESTORE_URL: ""
+      BACKUP_URL: ""
+      DB_CONNECTION: mysql # pgsql or mysql
+      DB_PASSWORD: ""
+      DB_HOST: firefly-firefly-db
+      DB_PORT: "3306"
+      DB_NAME: firefly
+      DB_USER: firefly
+
+      # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in configs
+    existingSecret: ""
+
 

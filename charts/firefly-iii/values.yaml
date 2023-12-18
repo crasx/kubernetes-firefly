@@ -20,33 +20,31 @@ persistence:
   existingClaim: ""
 
 # -- Environment variables for Firefly III. See docs at: https://github.com/firefly-iii/firefly-iii/blob/main/.env.example
-config:
-  # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in config.env
-  existingSecret: ""
+global:
+  config:
+    # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in config.env
+    existingSecret: ""
 
-  # -- Set environment variables from configMaps or Secrets
-  envValueFrom: {}
+    # -- Set environment variables from configMaps or Secrets
+    envValueFrom: {}
 
-  # -- Directly defined environment variables. Use this for non-secret configuration values.
-  env:
-    DB_HOST: "firefly-db"
-    # DB_CONNECTION: pgsql
-    # DB_PORT: "5432"
-    # DB_DATABASE: firefly
-    # DB_USERNAME: firefly
-    DEFAULT_LANGUAGE: "en_US"
-    DEFAULT_LOCALE: "equal"
-    TZ: "Europe/Amsterdam"
-    TRUSTED_PROXIES: "**"
+    # -- Directly defined environment variables. Use this for non-secret configuration values.
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: firefly-firefly-db
+      DB_PORT: "3306"
+      DB_DATABASE: firefly
+      DB_USERNAME: firefly
+      TZ: "Europe/Amsterdam"
+      DEFAULT_LANGUAGE: "en_US"
+      DEFAULT_LOCALE: "equal"
+      TRUSTED_PROXIES: "**"
 
-# -- Create a new Secret from values file to store sensitive environment variables. Make sure to keep your secrets encrypted in the repository! For example, you can use the 'helm secrets' plugin (https://github.com/jkroepke/helm-secrets) to encrypt and manage secrets. If the 'config.existingSecret' value is set, a new Secret will not be created.
-secrets:
-  env:
-    APP_PASSWORD: "CHANGE_ENCRYPT_ME"
-    DB_PASSWORD: "CHANGE_ENCRYPT_ME"
-  # -- Statically set the APP_KEY in case this is desired over the autogeneration. Should be a random 32-character string.
-  # -- Can be generated using: `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
-  # appKey: "CHANGE_ME"
+  # -- Create a new Secret from values file to store sensitive environment variables. Make sure to keep your secrets encrypted in the repository! For example, you can use the 'helm secrets' plugin (https://github.com/jkroepke/helm-secrets) to encrypt and manage secrets. If the 'config.existingSecret' value is set, a new Secret will not be created.
+  secrets:
+    env:
+      APP_KEY: "CHANGE_ENCRYPT_ME"
+      DB_PASSWORD: "CHANGE_ENCRYPT_ME"
 
 # -- A cronjob for [recurring Firefly III tasks](https://docs.firefly-iii.org/firefly-iii/advanced-installation/cron/).
 cronjob:
@@ -167,3 +165,16 @@ extraVolumeMounts: []
   # - name: db-tls-firefly
   #   mountPath: /db-cert
   #   readOnly: true
+
+extraContainers: []
+  # - name: firefly-plaid
+  #   image: "ghcr.io/dvankley/firefly-plaid-connector-2:1.0.8"
+  #   imagePullPolicy: "IfNotPresent"
+  #   volumeMounts:
+  #     - name: firefly-fpc-cursors
+  #       mountPath: /opt/fpc-cursors
+  #     - name: firefly-fpc-config
+  #       mountPath: /opt/fpc-config/application.yml
+  #   env:
+  #     - name: SPRING_CONFIG_LOCATION
+  #       value: /opt/fpc-config/application.yml
