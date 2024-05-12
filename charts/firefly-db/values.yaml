@@ -1,3 +1,19 @@
+global:
+  config:
+    env:
+      RESTORE_URL: ""
+      BACKUP_URL: ""
+      DB_CONNECTION: mysql # pgsql or mysql
+      DB_PASSWORD: ""
+      DB_HOST: firefly-firefly-db
+      DB_PORT: "3306"
+      DB_NAME: firefly
+      DB_USER: firefly
+
+      # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in configs
+    existingSecret: ""
+
+
 image:
   repository: mysql # postgres or mysql
   tag: 8 # For mysql
@@ -37,20 +53,4 @@ backup:
   extraVolumes: []
 
 backupSchedule: "0 3 * * *"
-
-global:
-  config:
-    env:
-      RESTORE_URL: ""
-      BACKUP_URL: ""
-      DB_CONNECTION: mysql # pgsql or mysql
-      DB_PASSWORD: ""
-      DB_HOST: firefly-firefly-db
-      DB_PORT: "3306"
-      DB_NAME: firefly
-      DB_USER: firefly
-
-      # -- Set this to the name of a secret to load environment variables from. If defined, values in the secret will override values in configs
-    existingSecret: ""
-
 
