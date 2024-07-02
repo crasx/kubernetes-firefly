@@ -2,7 +2,7 @@
 spec:
   containers:
   - name: {{ template "firefly-db.fullname" . }}-backup-job
-    image: alpine:3.13
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
     imagePullPolicy: IfNotPresent
     envFrom:
     - configMapRef:
@@ -12,6 +12,9 @@ spec:
     - -c
     - |
       set -e
+      echo "creating backup file"
+      pg_dump -h $DBHOST -p $DBPORT -U $DBUSER --format=p --clean -d $DBNAME > /var/lib/backup/$DBNAME.sql
+      ls -la
       apk update
       {{- if .Values.backup.gzip }}
       apk add gzip
